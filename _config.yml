@@ -21,16 +21,20 @@
 title: 月球的博客
 email: xinfengriver@outlook.com
 description: >- # this means to ignore newlines until "baseurl:"
-  记录与分享技术相关的经历与学习
+  蒹葭苍苍 白露为霜 所谓伊人 在水一方
 baseurl: "" # the subpath of your site, e.g. /blog
 url: "https://xinfengriver.github.io" # the base hostname & protocol for your site, e.g. http://example.com
 #twitter_username: jekyllrb
 #github_username:  jekyll
+lang: zh
 
 # Build settings
 theme: jekyll-theme-cayman
 plugins:
   - jekyll-feed
+
+paginate: 5
+paginate_path: "page:num"
 
 # Exclude from processing.
 # The following items will not be processed, by default.
