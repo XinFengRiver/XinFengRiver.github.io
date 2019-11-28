@@ -20,6 +20,7 @@
         $active: #337ab7;
 
         font-size: 1.5rem;
+        font-weight: 600;
 
         &:link, &:visited {
             color: $normal;
@@ -29,11 +30,17 @@
             color: $active;
         }
     }
+    .posts-item-desc {
+        color: #404040;
+        font-size: 1rem;
+        font-weight: 300;
+    }
     .posts-item-excerpt {
         $normal: #a3a3a3;
         $active: #337ab7;
 
         font-size: 1rem;
+        font-weight: 200;
         text-decoration: none;
 
         &:active, &:hover, &:link, &:visited {

@@ -25,6 +25,7 @@
             <h3>
                 <a href="{{ post.url }}" class="posts-item-title">{{ post.title }}</a>
             </h3>
+            <p class="posts-item-desc">{{ post.description }}</p>
             <a href="{{ post.url }}" class="posts-item-excerpt">{{ post.excerpt }}</a>
             <span class="posts-item-date">发布于 {{ post.date | date: "%Y-%m-%d" }}</span>
         </li>
