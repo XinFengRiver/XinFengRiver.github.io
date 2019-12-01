@@ -18,6 +18,14 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <link rel="stylesheet" href="{{ '/assets/css/style.css?v=' | append: site.github.build_revision | relative_url }}">
     <link rel="stylesheet" href="{{ '/assets/css/basic.css?v=' | append: site.github.build_revision | relative_url }}">
+    <style>
+        {% if page.headerImg %}
+        .page-header {
+            background: url("{{ page.headerImg }}");
+            background-size: cover;
+        }
+        {% endif %}
+    </style>
 </head>
 <body>
 
