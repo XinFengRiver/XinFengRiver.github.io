@@ -1,6 +1,6 @@
 ---
 layout: default
-title:  "使用<transition>和vue-router实现页面过渡效果"
+title:  "使用transition、vue-router、vuex管理页面切换的过渡效果"
 description: ""
 date:   2019-12-30 6:00:00 +0800
 categories: fend
@@ -8,7 +8,7 @@ categories: fend
 
 单页应用的一个优点是可以自行实现页面切换时的过渡效果，一个常见的场景是顶部导航栏固定不变，下方的页面随着路由组件的切换而呈现一些过渡效果。例如，我们希望从当前页导航下一页时，两个页面是从右到左过渡的；从当前页导航到上一页时，我们希望两个页面是从左过渡到右的，效果见下面的demo。
 
-{% include codepen.html hash="WNbOKvJ" title="页面切换" %}
+{% include codepen.html hash="WNbOKvJ" title="效果图" %}
 ## 前言
 这篇文章的目的是介绍一种可复用的单页应用路由的组件过渡效果的实现思路，我平时开发用的是vue生态的工具，所以实现部分是依靠vue生态的（当然，思路是可以举一反三的）。本文我会遵循循序渐进的原则，由最简单的实现开始，最终得出一个可用于生产环境的方案。在文章伊始，我会先罗列一些`<transition>`的用法，在不引入`vue-router`的情况下实现页面切换的效果，让读者熟悉`<transition>`。接着，我会介绍`<transition>`和`vue-router`是如何配合实现两个路由组件间的切换效果的。最后，我会提出带导航栏页面和多层级页面，并引入vuex管理这种复杂场景下的页面切换效果。
 
@@ -184,6 +184,54 @@ router.beforeEach((to, from, next) => {
 
 {% include codepen.html hash="NWPajjx" title="使用vuex管理transition name" %}
 使用vuex后，我们只需要在state定义`transitionName`，并在vue实例中的计算属性中引用。同时，我们在mutations也定了修改`transitionName`的方法，并在`router.beforeEach`中使用。
+
 我们为这个demo加点难度，设想一个场景：视窗顶部有一个固定的导航栏，路由组件切换的时候导航栏不需要重新渲染，只有路由组件才有过渡的效果，这时候，就需要用到嵌套路由。
 
 ### demo：嵌套路由与transitionName
+我们需要定义一个`Layout`组件，这个组件包含顶部的导航栏和一个`<router-view>`，page1和page2就作为路由的子组件在`<router-view>`中渲染。
+
+```html
+<script type="text/x-template" id="layout">
+  <div>
+    <div class="nav">
+      <a>返回</a>
+    </div>
+    <transition :name="transitionName" appear>
+      <router-view class="inner-view"></router-view>
+    </transition>
+  </div>
+</script>
+```
+```javascript
+const Layout = {
+  template: '#layout',
+  computed: {
+    transitionName() {
+      return store.state.transitionName
+    }
+  }
+}
+```
+我们在`Layout`的`<router-view>`外部也包了一个`<transition>`，并将`transitionName`绑定到了`name`属性，因此子组件切换的过渡效果也会遵循既有的规则。下面是完整的demo：
+
+{% include codepen.html hash="WNbOKvJ" title="嵌套路由与transitionName" %}
+
+看到这里，想必你也已经掌握如何使用路由层级和vuex去管理大规模的路由切换效果了。这套方案是符合低耦合标准的——如果你想增加路由，只需要添加`meta.level`；如果你想增加嵌套路由，只需要在上层路由组件也引入`transitionName`；如果你想有更多的变化，仅需要修改`beforeEach`，并在新路由的`meta`增添你想要的属性，就可以拓展现有的方案了。
+
+## 结语
+最后，让我们用一张简要的图来串联所有知识。
+```
+vue-router
++----------------------+                 +----------------------+
+| App                  |				 | App                  |
+| <transition>         |                 | <transition>         |
+| +------------------+ |                 | +------------------+ |
+| | Layout           | |                 | | Layout           | |
+| | <transition>     | |                 | | <transition>     | |
+| | +--------------+ | |       Vuex      | | +--------------+ | |
+| | | Page1        | | |  +------------> | | | Page2        | | |
+| | |              | | |                 | | |              | | |
+| | +--------------+ | |                 | | +--------------+ | |
+| +------------------+ |                 | +------------------+ |
++----------------------+				 +----------------------+
+```
